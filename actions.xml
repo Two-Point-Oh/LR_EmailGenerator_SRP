@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<remv1:Remediation-Plugin xmlns:remv1="RemediationVersion1.xsd" Name="Alarm Email Generator" IsLogRhythmPlugin="false" Guid="322E3027-7320-456D-6169-6C2053525030" Version="0">
+
+<remv1:Action Name="Create Configuration File" Command="powershell.exe">
+    <remv1:ConstantParameter Name="Script" Switch="-file Configuration.ps1" Order="1" />
+    <remv1:StringParameter Name="IP/Hostname/URL*" Switch="-IP " Order="2" />
+    <remv1:StringParameter Name="Port" Switch="-Port " Order="3">
+		<remv1:DefaultInput>
+			<remv1:StaticInput Value="8501" />
+		</remv1:DefaultInput>
+    </remv1:StringParameter>
+	
+    <remv1:EncryptedParameter>
+      <remv1:StringParameter Name="API Key*" Switch="-ApiKey " Order="4" />
+    </remv1:EncryptedParameter>
+
+	<remv1:StringParameter Name="SMTP Server*" Switch="-SMTPserver " Order="5" />
+	<remv1:StringParameter Name="Email Sender*" Switch="-EmailSender " Order="6" />
+	<remv1:StringParameter Name="Email Recipient(s)* (Comma Separated List)*" Switch="-EmailRecipients " Order="7" />
+	<remv1:StringParameter Name="Include CaseSRP output in email (y|N)" Switch="-IncludeCaseSRPOut " Order="8" />
+	<remv1:StringParameter Name="Email Credentials UserName (can be blank)" Switch="-UserName " Order="9" />
+	
+	<remv1:EncryptedParameter>
+      <remv1:StringParameter Name="Email Credentials Password (can be blank)" Switch="-Password " Order="10" />
+    </remv1:EncryptedParameter>
+
+  </remv1:Action>
+
+  <remv1:Action Name="Send an Email" Command="powershell.exe">
+    <remv1:ConstantParameter Name="Script" Switch="-file EmailGenerator.ps1" Order="1" />
+		
+	<remv1:StringParameter Name="Alarm Id*" Switch="-AlarmId " Order="2">
+      <remv1:DefaultInput>
+        <remv1:Object />
+      </remv1:DefaultInput>
+    </remv1:StringParameter>
+	
+	<remv1:StringParameter Name="Case Number*" Switch="-CaseNumber " Order="3">
+      <remv1:DefaultInput>
+        <remv1:ObjectType />
+      </remv1:DefaultInput>
+    </remv1:StringParameter>
+	
+	<remv1:StringParameter Name="Override Recipients in Config (Comma Separated)" Switch="-OverRideRecipients " Order="4" />
+	
+  </remv1:Action>
+ </remv1:Remediation-Plugin>
