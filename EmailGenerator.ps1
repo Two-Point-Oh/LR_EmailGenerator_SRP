@@ -2,7 +2,8 @@
   # Alarm Email                               	#
   # SRP-AlarmEmail								#
   # DosPuntoCero 						        #
-  # v0  --  Jan 2021                    		#
+  # v0  --  Jan 2021 
+  # v1  --  Added Log Source to email body 5/28/2024
   #=============================================#
 <#
 
@@ -213,6 +214,7 @@ try{
 	elseif ($DrillDownInfo.recipient){$EmailBody += "<tr><td>Recipient:</td><td>"+$DrillDownInfo.recipient+"</td></tr>"}
 	if ($AlarmApiEventResponse.alarmEventsDetails.subject){$EmailBody += "<tr><td>Subject:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.subject+"</td></tr>"}
 	elseif ($DrillDownInfo.subject){$EmailBody += "<tr><td>Subject:</td><td>"+$DrillDownInfo.subject+"</td></tr>"}
+	$EmailBody += "<tr><td>Log Source:</td><td>"+$DrillDownInfo.logsource+"</td></tr>" #Added at my bosses request 5/28/24
 	if (($AlarmApiEventResponse.alarmEventsDetails.impactedIP) -or ($AlarmApiEventResponse.alarmEventsDetails.impactedHostName) -or ($AlarmApiEventResponse.alarmEventsDetails.originIP) -or ($AlarmApiEventResponse.alarmEventsDetails.originHostName) -or ($AlarmApiEventResponse.alarmEventsDetails.login) -or ($AlarmApiEventResponse.alarmEventsDetails.account)){
 		$EmailBody += "</table><table><tr><th></th><th>Origin</th><th>Impacted</th></tr>"
 		if (($AlarmApiEventResponse.alarmEventsDetails.originHostName) -or ($AlarmApiEventResponse.alarmEventsDetails.impactedHostName)){
