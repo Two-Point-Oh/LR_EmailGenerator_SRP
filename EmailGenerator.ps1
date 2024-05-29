@@ -163,6 +163,24 @@ try{
 		}
 	}
 	
+	$RBP = $AlarmApiResponse.alarmDetails.rbpMax
+	if ($RBP -lt 50){
+		$first = [System.Convert]::ToString(([math]::Round($RBP*5.1)),16)
+	}else{
+		$first = 'ff'
+	}
+	if ($RBP -gt 50){
+		$second = [System.Convert]::ToString(([math]::Round(255-(($RBP-50)*5.1))),16)
+	}else{
+		$second = 'ff'
+	}
+	$colorhex = ""
+	if ($first.Length -eq 1){$colorhex += "0"}
+	$colorhex += $first
+	if ($second.Length -eq 1){$colorhex += "0"}
+	$colorhex += $second+"00"
+
+	
 	$EmailBody = "<style>
 	table {
 	  font-family: arial, sans-serif;
@@ -181,39 +199,39 @@ try{
 	}
 	</style>
 	</head>
-	<body><table><tr><td>Alarm Rule Name:`t</td><td>"+$AlarmApiResponse.alarmDetails.alarmRuleName+"</td></tr><tr><td>Risk Score:</td><td>"+$AlarmApiResponse.alarmDetails.rbpMax+"</td></tr><tr><td>Alarm Date:</td><td>"+$AlarmApiResponse.alarmDetails.alarmDate+'</td></tr><tr><td>Case Link:</td><td><a href="'+$CaseURL+'">'+$CaseURL+"</a></td></tr>"
-	if ($AlarmApiEventResponse.alarmEventsDetails.classificationName){$EmailBody += "<tr><td>Classification:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.classificationName+"</td></tr>"}
-	elseif ($DrillDownInfo.classificationName){$EmailBody += "<tr><td>Classification:</td><td>"+$DrillDownInfo.classificationName+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.command){$EmailBody += "<tr><td>Command:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.command+"</td></tr>"}
-	elseif ($DrillDownInfo.command){$EmailBody += "<tr><td>Command:</td><td>"+$DrillDownInfo.command+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.count){$EmailBody += "<tr><td>Count:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.count+"</td></tr>"}
-	elseif ($DrillDownInfo.count){$EmailBody += "<tr><td>Count:</td><td>"+$DrillDownInfo.count+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.directionName){$EmailBody += "<tr><td>Direction:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.directionName+"</td></tr>"}
-	elseif ($DrillDownInfo.directionName){$EmailBody += "<tr><td>Direction:</td><td>"+$DrillDownInfo.directionName+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.objectName){$EmailBody += "<tr><td>Object:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.objectName+"</td></tr>"}
-	elseif ($DrillDownInfo.objectName){$EmailBody += "<tr><td>Object:</td><td>"+$DrillDownInfo.objectName+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.policy){$EmailBody += "<tr><td>Policy:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.policy+"</td></tr>"}
-	elseif ($DrillDownInfo.policy){$EmailBody += "<tr><td>Policy:</td><td>"+$DrillDownInfo.policy+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.process){$EmailBody += "<tr><td>Process:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.process+"</td></tr>"}
-	elseif ($DrillDownInfo.process){$EmailBody += "<tr><td>Process:</td><td>"+$DrillDownInfo.process+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.result){$EmailBody += "<tr><td>Result:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.result+"</td></tr>"}
-	elseif ($DrillDownInforesult){$EmailBody += "<tr><td>Result:</td><td>"+$DrillDownInfo.result+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.severity){$EmailBody += "<tr><td>Severity:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.severity+"</td></tr>"}
-	elseif ($DrillDownInfo.severity){$EmailBody += "<tr><td>Severity:</td><td>"+$DrillDownInfo.severity+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.status){$EmailBody += "<tr><td>Status:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.status+"</td></tr>"}
-	elseif ($DrillDownInfo.status){$EmailBody += "<tr><td>Status:</td><td>"+$DrillDownInfo.status+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.threatName){$EmailBody += "<tr><td>Threat Name:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.threatName+"</td></tr>"}
-	elseif ($DrillDownInfo.threatName){$EmailBody += "<tr><td>Threat Name:</td><td>"+$DrillDownInfo.threatName+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.url){$EmailBody += "<tr><td>URL:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.url+"</td></tr>"}
-	elseif ($DrillDownInfo.url){$EmailBody += "<tr><td>URL:</td><td>"+$DrillDownInfo.url+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.vendorInfo){$EmailBody += "<tr><td>Vendor Info:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.vendorInfo+"</td></tr>"}
-	elseif ($DrillDownInfo.vendorInfo){$EmailBody += "<tr><td>Vendor Info:</td><td>"+$DrillDownInfo.vendorInfo+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.sender){$EmailBody += "<tr><td>Sender:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.sender+"</td></tr>"}
-	elseif ($DrillDownInfo.sender){$EmailBody += "<tr><td>Sender:</td><td>"+$DrillDownInfo.sender+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.recipient){$EmailBody += "<tr><td>Recipient:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.recipient+"</td></tr>"}
-	elseif ($DrillDownInfo.recipient){$EmailBody += "<tr><td>Recipient:</td><td>"+$DrillDownInfo.recipient+"</td></tr>"}
-	if ($AlarmApiEventResponse.alarmEventsDetails.subject){$EmailBody += "<tr><td>Subject:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.subject+"</td></tr>"}
-	elseif ($DrillDownInfo.subject){$EmailBody += "<tr><td>Subject:</td><td>"+$DrillDownInfo.subject+"</td></tr>"}
+	<body><table style='background-color:#$colorhex; color:#$colorhex'><tr>_</tr></table><table><tr><td>Alarm Rule Name:`t</td><td>"+$AlarmApiResponse.alarmDetails.alarmRuleName+"</td></tr><tr><td>Risk Score:</td><td>"+$AlarmApiResponse.alarmDetails.rbpMax+"</td></tr><tr><td>Alarm Date:</td><td>"+$AlarmApiResponse.alarmDetails.alarmDate+'</td></tr><tr><td>Case Link:</td><td><a href="'+$CaseURL+'">'+$CaseURL+"</a></td></tr>"
+	if ($AlarmApiEventResponse.alarmEventsDetails.classificationName){$EmailBody += "<tr><td>Classification:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.classificationName+"</td></tr>"
+	} elseif ($DrillDownInfo.classificationName){$EmailBody += "<tr><td>Classification:</td><td>"+$DrillDownInfo.classificationName+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.command){$EmailBody += "<tr><td>Command:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.command+"</td></tr>"
+	} elseif ($DrillDownInfo.command){$EmailBody += "<tr><td>Command:</td><td>"+$DrillDownInfo.command+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.count){$EmailBody += "<tr><td>Count:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.count+"</td></tr>"
+	} elseif ($DrillDownInfo.count){$EmailBody += "<tr><td>Count:</td><td>"+$DrillDownInfo.count+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.directionName){$EmailBody += "<tr><td>Direction:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.directionName+"</td></tr>"
+	} elseif ($DrillDownInfo.directionName){$EmailBody += "<tr><td>Direction:</td><td>"+$DrillDownInfo.directionName+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.objectName){$EmailBody += "<tr><td>Object:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.objectName+"</td></tr>"
+	} elseif ($DrillDownInfo.objectName){$EmailBody += "<tr><td>Object:</td><td>"+$DrillDownInfo.objectName+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.policy){$EmailBody += "<tr><td>Policy:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.policy+"</td></tr>"
+	} elseif ($DrillDownInfo.policy){$EmailBody += "<tr><td>Policy:</td><td>"+$DrillDownInfo.policy+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.process){$EmailBody += "<tr><td>Process:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.process+"</td></tr>"
+	} elseif ($DrillDownInfo.process){$EmailBody += "<tr><td>Process:</td><td>"+$DrillDownInfo.process+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.result){$EmailBody += "<tr><td>Result:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.result+"</td></tr>"
+	} elseif ($DrillDownInforesult){$EmailBody += "<tr><td>Result:</td><td>"+$DrillDownInfo.result+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.severity){$EmailBody += "<tr><td>Severity:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.severity+"</td></tr>"
+	} elseif ($DrillDownInfo.severity){$EmailBody += "<tr><td>Severity:</td><td>"+$DrillDownInfo.severity+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.status){$EmailBody += "<tr><td>Status:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.status+"</td></tr>"
+	} elseif ($DrillDownInfo.status){$EmailBody += "<tr><td>Status:</td><td>"+$DrillDownInfo.status+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.threatName){$EmailBody += "<tr><td>Threat Name:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.threatName+"</td></tr>"
+	} elseif ($DrillDownInfo.threatName){$EmailBody += "<tr><td>Threat Name:</td><td>"+$DrillDownInfo.threatName+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.url){$EmailBody += "<tr><td>URL:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.url+"</td></tr>"
+	} elseif ($DrillDownInfo.url){$EmailBody += "<tr><td>URL:</td><td>"+$DrillDownInfo.url+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.vendorInfo){$EmailBody += "<tr><td>Vendor Info:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.vendorInfo+"</td></tr>"
+	} elseif ($DrillDownInfo.vendorInfo){$EmailBody += "<tr><td>Vendor Info:</td><td>"+$DrillDownInfo.vendorInfo+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.sender){$EmailBody += "<tr><td>Sender:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.sender+"</td></tr>"
+	} elseif ($DrillDownInfo.sender){$EmailBody += "<tr><td>Sender:</td><td>"+$DrillDownInfo.sender+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.recipient){$EmailBody += "<tr><td>Recipient:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.recipient+"</td></tr>"
+	} elseif ($DrillDownInfo.recipient){$EmailBody += "<tr><td>Recipient:</td><td>"+$DrillDownInfo.recipient+"</td></tr>"}
+	if ($AlarmApiEventResponse.alarmEventsDetails.subject){$EmailBody += "<tr><td>Subject:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.subject+"</td></tr>"
+	} elseif ($DrillDownInfo.subject){$EmailBody += "<tr><td>Subject:</td><td>"+$DrillDownInfo.subject+"</td></tr>"}
 	$EmailBody += "<tr><td>Log Source:</td><td>"+$DrillDownInfo.logsource+"</td></tr>" #Added at my bosses request 5/28/24
 	if (($AlarmApiEventResponse.alarmEventsDetails.impactedIP) -or ($AlarmApiEventResponse.alarmEventsDetails.impactedHostName) -or ($AlarmApiEventResponse.alarmEventsDetails.originIP) -or ($AlarmApiEventResponse.alarmEventsDetails.originHostName) -or ($AlarmApiEventResponse.alarmEventsDetails.login) -or ($AlarmApiEventResponse.alarmEventsDetails.account)){
 		$EmailBody += "</table><table><tr><th></th><th>Origin</th><th>Impacted</th></tr>"
@@ -226,8 +244,7 @@ try{
 		if (($AlarmApiEventResponse.alarmEventsDetails.login) -or ($AlarmApiEventResponse.alarmEventsDetails.account)){
 			$EmailBody += "<tr><td>User:</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.login+"</td><td>"+$AlarmApiEventResponse.alarmEventsDetails.account+"</td></tr>"
 		}
-	}
-	elseif (($DrillDownInfo.impactedIP) -or ($DrillDownInfo.impactedHostName) -or ($DrillDownInfo.originIP) -or ($DrillDownInfo.originHostName) -or ($DrillDownInfo.login) -or ($DrillDownInfo.account)){
+	} elseif (($DrillDownInfo.impactedIP) -or ($DrillDownInfo.impactedHostName) -or ($DrillDownInfo.originIP) -or ($DrillDownInfo.originHostName) -or ($DrillDownInfo.login) -or ($DrillDownInfo.account)){
 		$EmailBody += "</table><table><tr><th></th><th>Origin</th><th>Impacted</th></tr>"
 		if (($DrillDownInfo.originHostName) -or ($DrillDownInfo.impactedHostName)){
 			$EmailBody += "<tr><td>Host:</td><td>"+$DrillDownInfo.originHostName+"</td><td>"+$DrillDownInfo.impactedHostName+"</td></tr>"
